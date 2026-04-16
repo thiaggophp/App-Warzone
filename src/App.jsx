@@ -1,6 +1,5 @@
 import{useState}from"react";
 import BottomNav from"./components/BottomNav";
-import InstallBanner from"./components/InstallBanner";
 import Meta from"./pages/Meta";
 import Loadouts from"./pages/Loadouts";
 import Sugestoes from"./pages/Sugestoes";
@@ -183,7 +182,6 @@ export default function App(){
         <Page key={tab}/>
       </main>
 
-      <InstallBanner/>
       <BottomNav tab={tab} setTab={setTab}/>
 
       {/* Modal Sobre */}
