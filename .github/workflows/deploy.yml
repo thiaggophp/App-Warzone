@@ -22,6 +22,8 @@ jobs:
             git pull
             npm install
             npm run build
+            BUILD_TS=$(date +%s)
+            sed -i "s/const CACHE=\"[^\"]*\"/const CACHE=\"wzrecon-${BUILD_TS}\"/" dist/sw.js
             mkdir -p /var/www/warzone-html/data
             cp -r dist/* /var/www/warzone-html/
             # Mantém o diretório data servido diretamente pelo scraper (via nginx alias)
