@@ -61,7 +61,7 @@ export async function getNoticias(){
 }
 
 export async function getTemporada(){
-  return tryPB(
+  const data=await tryPB(
     "wz_temporada",
     async()=>{
       const list=await pb.collection("wz_temporada").getFullList({sort:"-inicio",limit:1});
@@ -70,6 +70,9 @@ export async function getTemporada(){
     "temporada.json",
     MOCK_TEMPORADA
   );
+  // Garante campos descritivos: scraped/PB traz numero/inicio/fim;
+  // mockData preenche descricao/novidades/passeDeBatalha enquanto não há fonte automática
+  return{...MOCK_TEMPORADA,...data};
 }
 
 export async function getEventos(){

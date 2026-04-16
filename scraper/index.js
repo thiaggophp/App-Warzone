@@ -12,7 +12,8 @@ import { scrapeNerfBuff } from "./scrapers/nerfbuff.js";
 import { scrapeTemporada } from "./scrapers/temporada.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = resolve(__dirname, "../public/data");
+// DATA_DIR pode ser sobrescrito via variável de ambiente (usado no VPS para servir via nginx)
+const DATA_DIR = process.env.DATA_DIR || resolve(__dirname, "../public/data");
 
 // Carrega .env do diretório do scraper (funciona tanto com "node index.js" quanto "npm run scrape")
 config({ path: resolve(__dirname, ".env") });
@@ -161,13 +162,74 @@ async function runMeta() {
     await replaceAll("wz_loadouts", loadoutsFinal);
   }
 
-  // Verifica e atualiza datas da temporada a partir dos feeds de notícias
-  await runVerificaTemporada();
+  // Verifica e atualiza datas da temporada (passa patches se já disponíveis)
+  const patchesAtual = await readJSON("patches.json");
+  await runVerificaTemporada(patchesAtual || []);
 }
 
-async function runVerificaTemporada() {
-  const scraped = await scrapeTemporada();
-  if (!scraped) return;
+// Deriva temporada atual a partir dos patches já scraped
+// Retorna { numero, inicio, fim } ou null
+async function derivarTemporadaDosPatches(patches) {
+  if (!patches || patches.length === 0) return null;
+
+  // Filtra patches BO7 (a partir de Dez/2025, quando BO7 lançou) com nome limpo
+  // Exclui ciclos anteriores (MW3/WZ2) que têm os mesmos nomes de temporada
+  const bo7 = patches.filter(p =>
+    p.data >= "2025-12-01" &&
+    p.temporada &&
+    /^Season\s+\d+$/i.test(p.temporada.trim())
+  );
+  if (bo7.length === 0) return null;
+
+  // Agrupa por temporada, pega início (data mais antiga do grupo)
+  const byTemp = {};
+  bo7.forEach(p => {
+    const s = p.temporada.trim();
+    if (!byTemp[s]) byTemp[s] = { inicio: p.data };
+    if (p.data < byTemp[s].inicio) byTemp[s].inicio = p.data;
+  });
+
+  // Ordena por início decrescente — o mais recente é a temporada atual
+  const sorted = Object.entries(byTemp)
+    .map(([nome, v]) => ({ nome, inicio: v.inicio }))
+    .sort((a, b) => b.inicio.localeCompare(a.inicio));
+
+  if (sorted.length === 0) return null;
+
+  const atual = sorted[0];
+
+  // Calcula duração média entre temporadas (baseado no histórico BO7)
+  let duracaoMedia = 63; // fallback: 63 dias (~2 meses, padrão Warzone)
+  if (sorted.length >= 2) {
+    const duracoes = [];
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const dias = Math.round(
+        (new Date(sorted[i].inicio) - new Date(sorted[i + 1].inicio)) / (1000 * 60 * 60 * 24)
+      );
+      if (dias >= 40 && dias <= 100) duracoes.push(dias);
+    }
+    if (duracoes.length > 0) duracaoMedia = Math.round(duracoes.reduce((a, b) => a + b, 0) / duracoes.length);
+  }
+
+  const fimDate = new Date(new Date(atual.inicio).getTime() + duracaoMedia * 24 * 60 * 60 * 1000);
+  const fim = fimDate.toISOString().slice(0, 10);
+
+  return { numero: `Temporada ${atual.nome.match(/\d+/)[0]}`, inicio: atual.inicio, fim };
+}
+
+async function runVerificaTemporada(patches) {
+  // Tenta derivar das patches (método primário — muito confiável)
+  let scraped = await derivarTemporadaDosPatches(patches);
+
+  // Fallback: RSS (método original, menos confiável)
+  if (!scraped) {
+    scraped = await scrapeTemporada();
+  }
+
+  if (!scraped) {
+    console.log("[temporada] Não foi possível detectar a temporada atual");
+    return;
+  }
 
   // Lê temporada atual (JSON salvo anteriormente) para comparar e preservar campos manuais
   const atual = await readJSON("temporada.json");
@@ -176,17 +238,18 @@ async function runVerificaTemporada() {
   // Detecta mudança de temporada para alertar no log
   if (base.numero && base.numero !== scraped.numero) {
     console.log(`\n⚠️  NOVA TEMPORADA DETECTADA: ${base.numero} → ${scraped.numero}`);
-    console.log("   Atualize manualmente: descricao, novidades, passeDeBatalha em mockData.js\n");
+    console.log("   Considere atualizar: descricao, novidades, passeDeBatalha em mockData.js\n");
   }
 
   // Verifica se algo mudou antes de salvar
   if (base.inicio === scraped.inicio && base.fim === scraped.fim && base.numero === scraped.numero) {
-    console.log(`[temporada] Datas já estão corretas — sem alteração`);
+    console.log(`[temporada] ${scraped.numero} — ${scraped.inicio} a ${scraped.fim} (sem alteração)`);
     return;
   }
 
-  // Mescla: atualiza só numero/inicio/fim; preserva campos manuais
+  // Mescla: atualiza numero/inicio/fim; preserva campos descritivos manuais
   const merged = { ...base, ...scraped };
+  console.log(`[temporada] Atualizado: ${scraped.numero} — ${scraped.inicio} a ${scraped.fim}`);
   await saveJSON("temporada.json", merged);
 
   if (pb) {
@@ -217,6 +280,9 @@ async function runNoticias() {
 
   await saveJSON("noticias.json", noticias);
   await saveJSON("patches.json", patches);
+
+  // Atualiza temporada usando os patches recém-scraped
+  if (patches.length > 0) await runVerificaTemporada(patches);
 
   if (pb) {
     await replaceAll("wz_noticias", noticias);

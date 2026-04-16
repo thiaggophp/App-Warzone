@@ -21,8 +21,9 @@ export default function Noticias(){
   return(
     <div style={{animation:"fadeIn .3s ease"}}>
       <div style={{marginBottom:20}}>
-        <h1 style={{fontSize:22,fontWeight:800,color:"#f1f5f9",marginBottom:4}}>Notícias</h1>
-        <p style={{fontSize:12,color:"#475569"}}>Últimas novidades do Warzone</p>
+        <div style={{fontSize:10,color:"#4ade80",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>// TRANSMISSÃO</div>
+        <h1 style={{fontSize:22,fontWeight:900,color:"#ddeee4",letterSpacing:.5,textTransform:"uppercase"}}>Notícias</h1>
+        <p style={{fontSize:11,color:"#3d5a46",fontWeight:600,letterSpacing:.5,marginTop:2}}>ÚLTIMAS NOVIDADES DO WARZONE</p>
       </div>
 
       {loading?(
@@ -42,14 +43,15 @@ export default function Noticias(){
             return(
               <a key={n.id||i} href={n.url||n.link} target="_blank" rel="noopener noreferrer" style={{
                 textDecoration:"none",display:"block",
-                background:"rgba(255,255,255,.03)",
-                border:"1px solid rgba(255,255,255,.07)",
-                borderRadius:14,padding:14,
+                background:"rgba(12,22,16,.6)",
+                border:"1px solid rgba(60,90,70,.2)",
+                borderLeft:"3px solid rgba(249,115,22,.4)",
+                borderRadius:6,padding:14,
                 animation:`fadeIn .3s ease ${i*.06}s both`,
                 transition:"background .2s,border-color .2s"
               }}
-              onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,255,255,.05)";e.currentTarget.style.borderColor="rgba(249,115,22,.2)"}}
-              onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,.03)";e.currentTarget.style.borderColor="rgba(255,255,255,.07)"}}>
+              onMouseEnter={e=>{e.currentTarget.style.background="rgba(16,30,20,.8)";e.currentTarget.style.borderColor="rgba(249,115,22,.3)"}}
+              onMouseLeave={e=>{e.currentTarget.style.background="rgba(12,22,16,.6)";e.currentTarget.style.borderColor="rgba(60,90,70,.2)"}}>
                 {/* Imagem */}
                 {n.imagem&&(
                   <div style={{
@@ -60,7 +62,7 @@ export default function Noticias(){
                   </div>
                 )}
 
-                <div style={{fontSize:15,fontWeight:700,color:"#f1f5f9",lineHeight:1.4,marginBottom:6}}>
+                <div style={{fontSize:14,fontWeight:700,color:"#ddeee4",lineHeight:1.4,marginBottom:6}}>
                   {n.titulo}
                 </div>
 

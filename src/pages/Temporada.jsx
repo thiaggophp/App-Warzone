@@ -34,35 +34,39 @@ export default function Temporada(){
   return(
     <div style={{animation:"fadeIn .3s ease"}}>
       <div style={{marginBottom:20}}>
-        <h1 style={{fontSize:22,fontWeight:800,color:"#f1f5f9",marginBottom:4}}>{data.numero}</h1>
-        <p style={{fontSize:12,color:"#475569"}}>{data.jogo||"Warzone"}</p>
+        <div style={{fontSize:10,color:"#4ade80",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>// STATUS OPERACIONAL</div>
+        <h1 style={{fontSize:22,fontWeight:900,color:"#ddeee4",letterSpacing:.5,textTransform:"uppercase"}}>{data.numero}</h1>
+        <p style={{fontSize:11,color:"#3d5a46",fontWeight:600,letterSpacing:.5,marginTop:2,textTransform:"uppercase"}}>{data.jogo||"Warzone"}</p>
       </div>
 
       {/* Card progresso */}
       <div style={{
-        background:"linear-gradient(135deg,rgba(249,115,22,.12),rgba(251,191,36,.06))",
-        border:"1px solid rgba(249,115,22,.2)",
-        borderRadius:18,padding:18,marginBottom:14
+        background:"rgba(12,22,16,.7)",
+        border:"1px solid rgba(249,115,22,.25)",
+        borderLeft:"3px solid #f97316",
+        borderRadius:6,padding:16,marginBottom:14
       }}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <span style={{fontSize:13,fontWeight:700,color:"#fed7aa"}}>Progresso da Temporada</span>
+          <span style={{fontSize:10,fontWeight:800,color:"#f97316",letterSpacing:1.5,textTransform:"uppercase"}}>// PROGRESSO DA TEMPORADA</span>
           <span style={{
-            background:"rgba(249,115,22,.2)",border:"1px solid rgba(249,115,22,.3)",
-            borderRadius:20,padding:"3px 12px",fontSize:12,fontWeight:700,color:"#f97316"
-          }}>{dias} dias restantes</span>
+            background:"rgba(249,115,22,.15)",border:"1px solid rgba(249,115,22,.3)",
+            borderRadius:3,padding:"3px 10px",fontSize:11,fontWeight:800,color:"#f97316",
+            letterSpacing:.5,textTransform:"uppercase",fontFamily:"monospace"
+          }}>{dias}d restantes</span>
         </div>
 
-        {/* Barra */}
-        <div style={{background:"rgba(255,255,255,.06)",borderRadius:10,height:8,marginBottom:8,overflow:"hidden"}}>
+        {/* Barra estilo HUD */}
+        <div style={{background:"rgba(255,255,255,.06)",borderRadius:2,height:6,marginBottom:8,overflow:"hidden",position:"relative"}}>
           <div style={{
-            height:"100%",borderRadius:10,
-            background:"linear-gradient(90deg,#f97316,#fbbf24)",
-            width:`${progress.toFixed(1)}%`,transition:"width 1s ease"
+            height:"100%",borderRadius:2,
+            background:"linear-gradient(90deg,#f97316,#f59e0b)",
+            width:`${progress.toFixed(1)}%`,transition:"width 1s ease",
+            boxShadow:"0 0 8px rgba(249,115,22,.5)"
           }}/>
         </div>
-        <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#475569"}}>
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:9,color:"#3d5a46",fontFamily:"monospace",fontWeight:700}}>
           <span>{formatData(data.inicio)}</span>
-          <span style={{fontWeight:700,color:"#f97316"}}>{progress.toFixed(0)}%</span>
+          <span style={{color:"#f97316",fontSize:11}}>{progress.toFixed(0)}%</span>
           <span>{formatData(data.fim)}</span>
         </div>
       </div>

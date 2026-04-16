@@ -5,6 +5,8 @@ import Skeleton from"../components/Skeleton";
 
 const FILTROS=["Todos","S","A","B"];
 const SLOT_ICONS={"Boca":"💨","Cano":"🔩","Acoplamento":"🔧","Mira":"🔭","Cabo":"✋","Munição":"📦","Coronha":"🪵","Cabo de pistola":"🤜","Receptor":"⚙️"};
+const TIER_BORDER={S:"rgba(245,158,11,.5)",A:"rgba(249,115,22,.4)",B:"rgba(74,222,128,.35)"};
+const TIER_GLOW={S:"0 0 14px rgba(245,158,11,.12)",A:"none",B:"none"};
 
 export default function Loadouts(){
   const[loadouts,setLoadouts]=useState([]);
@@ -23,20 +25,22 @@ export default function Loadouts(){
   return(
     <div style={{animation:"fadeIn .3s ease"}}>
       <div style={{marginBottom:16}}>
-        <h1 style={{fontSize:22,fontWeight:800,color:"#f1f5f9",marginBottom:4}}>Loadouts</h1>
-        <p style={{fontSize:12,color:"#475569"}}>Configurações completas com attachments e perks</p>
+        <div style={{fontSize:10,color:"#4ade80",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>// ARMAMENTO</div>
+        <h1 style={{fontSize:22,fontWeight:900,color:"#ddeee4",letterSpacing:.5,textTransform:"uppercase"}}>Loadouts</h1>
+        <p style={{fontSize:11,color:"#3d5a46",fontWeight:600,letterSpacing:.5,marginTop:2}}>CONFIGURAÇÕES COM ATTACHMENTS REAIS</p>
       </div>
 
-      <div style={{display:"flex",gap:6,marginBottom:20}}>
+      <div style={{display:"flex",gap:5,marginBottom:20}}>
         {FILTROS.map(f=>(
           <button key={f} onClick={()=>setFiltro(f)} style={{
-            padding:"6px 16px",borderRadius:20,border:"1px solid",
-            background:filtro===f?"#f97316":"rgba(255,255,255,.04)",
-            borderColor:filtro===f?"#f97316":"rgba(255,255,255,.08)",
-            color:filtro===f?"#fff":"#64748b",
-            fontSize:12,fontWeight:600,cursor:"pointer"
+            padding:"5px 14px",borderRadius:3,border:"1px solid",
+            background:filtro===f?"#f97316":"rgba(255,255,255,.03)",
+            borderColor:filtro===f?"#f97316":"rgba(60,90,70,.3)",
+            color:filtro===f?"#fff":"#4a6a55",
+            fontSize:11,fontWeight:700,cursor:"pointer",
+            letterSpacing:.5,textTransform:"uppercase"
           }}>
-            {f==="Todos"?"Todos":"Tier "+f}
+            {f==="Todos"?"TODOS":"TIER "+f}
           </button>
         ))}
       </div>
@@ -57,11 +61,13 @@ export default function Loadouts(){
             const atts=Array.isArray(l.attachments)?l.attachments:(typeof l.attachments==="string"?JSON.parse(l.attachments||"[]"):[]);
             return(
               <div key={l.id||l.arma} style={{
-                background:"rgba(255,255,255,.03)",
-                border:`1px solid ${open?"rgba(249,115,22,.3)":"rgba(255,255,255,.07)"}`,
-                borderRadius:16,overflow:"hidden",
+                background:"rgba(12,22,16,.6)",
+                border:`1px solid ${open?TIER_BORDER[l.tier]||"rgba(249,115,22,.3)":"rgba(60,90,70,.2)"}`,
+                borderLeft:`3px solid ${TIER_BORDER[l.tier]||"rgba(60,90,70,.3)"}`,
+                borderRadius:6,overflow:"hidden",
                 animation:`fadeIn .3s ease ${i*.06}s both`,
-                transition:"border-color .2s"
+                boxShadow:open?TIER_GLOW[l.tier]||"none":"none",
+                transition:"border-color .2s,box-shadow .2s"
               }}>
                 {/* Header */}
                 <button onClick={()=>setExpandido(open?null:uid)} style={{
@@ -79,8 +85,8 @@ export default function Loadouts(){
                     </svg>
                   </div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontWeight:700,fontSize:15,color:"#f1f5f9"}}>{l.arma}</div>
-                    <div style={{fontSize:11,color:"#475569",marginTop:2,display:"flex",gap:6,alignItems:"center"}}>
+                    <div style={{fontWeight:800,fontSize:14,color:"#ddeee4",letterSpacing:.3,textTransform:"uppercase"}}>{l.arma}</div>
+                    <div style={{fontSize:10,color:"#3d5a46",marginTop:2,display:"flex",gap:6,alignItems:"center",fontWeight:600,letterSpacing:.5}}>
                       <span>{l.tipo}</span>
                       {l.alcance&&<><span>·</span><span>{l.alcance}</span></>}
                     </div>
@@ -101,17 +107,18 @@ export default function Loadouts(){
 
                     {/* Attachments */}
                     <div style={{marginBottom:14}}>
-                      <div style={{fontSize:11,color:"#f97316",fontWeight:700,marginBottom:8,letterSpacing:.8,textTransform:"uppercase"}}>Attachments</div>
-                      <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                      <div style={{fontSize:10,color:"#f97316",fontWeight:800,marginBottom:8,letterSpacing:1.5,textTransform:"uppercase"}}>// Attachments</div>
+                      <div style={{display:"flex",flexDirection:"column",gap:4}}>
                         {atts.map((a,idx)=>(
                           <div key={idx} style={{
                             display:"flex",alignItems:"center",gap:10,
-                            background:"rgba(255,255,255,.03)",borderRadius:8,padding:"8px 12px"
+                            background:"rgba(255,255,255,.025)",borderRadius:4,padding:"7px 10px",
+                            borderLeft:"2px solid rgba(60,90,70,.4)"
                           }}>
-                            <span style={{fontSize:16}}>{SLOT_ICONS[a.slot]||"🔸"}</span>
+                            <span style={{fontSize:14}}>{SLOT_ICONS[a.slot]||"🔸"}</span>
                             <div>
-                              <div style={{fontSize:10,color:"#475569",fontWeight:600,textTransform:"uppercase",letterSpacing:.5}}>{a.slot}</div>
-                              <div style={{fontSize:13,color:"#e2e8f0",fontWeight:600}}>{a.nome}</div>
+                              <div style={{fontSize:9,color:"#2d4a38",fontWeight:700,textTransform:"uppercase",letterSpacing:.8}}>{a.slot}</div>
+                              <div style={{fontSize:12,color:"#cfe8d8",fontWeight:700}}>{a.nome}</div>
                             </div>
                           </div>
                         ))}
@@ -148,16 +155,17 @@ export default function Loadouts(){
                     {/* Código */}
                     {l.codigo&&(
                       <div style={{
-                        background:"rgba(249,115,22,.06)",border:"1px solid rgba(249,115,22,.15)",
-                        borderRadius:8,padding:"10px 12px",display:"flex",alignItems:"center",justifyContent:"space-between"
+                        background:"rgba(245,158,11,.05)",border:"1px solid rgba(245,158,11,.2)",
+                        borderRadius:4,padding:"10px 12px",display:"flex",alignItems:"center",justifyContent:"space-between"
                       }}>
                         <div>
-                          <div style={{fontSize:10,color:"#f97316",fontWeight:700,textTransform:"uppercase",letterSpacing:.5}}>Código do Loadout</div>
-                          <div style={{fontSize:13,color:"#fed7aa",fontWeight:700,marginTop:2,fontFamily:"monospace"}}>{l.codigo}</div>
+                          <div style={{fontSize:9,color:"#f59e0b",fontWeight:800,textTransform:"uppercase",letterSpacing:1.2}}>// CÓDIGO DO LOADOUT</div>
+                          <div style={{fontSize:12,color:"#fde68a",fontWeight:700,marginTop:3,fontFamily:"monospace",letterSpacing:.5}}>{l.codigo}</div>
                         </div>
                         <button onClick={()=>navigator.clipboard?.writeText(l.codigo)} style={{
-                          background:"rgba(249,115,22,.15)",border:"1px solid rgba(249,115,22,.25)",
-                          borderRadius:6,padding:"5px 10px",color:"#f97316",fontSize:11,fontWeight:600,cursor:"pointer"
+                          background:"rgba(245,158,11,.12)",border:"1px solid rgba(245,158,11,.3)",
+                          borderRadius:3,padding:"5px 10px",color:"#f59e0b",fontSize:10,fontWeight:800,cursor:"pointer",
+                          letterSpacing:.5,textTransform:"uppercase"
                         }}>Copiar</button>
                       </div>
                     )}

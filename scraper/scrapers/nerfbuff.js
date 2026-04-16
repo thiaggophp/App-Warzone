@@ -20,11 +20,6 @@ function parseSeasonFromAria(aria) {
   return m ? m[1].trim() : "";
 }
 
-// Lazy-loaded images usam data-lazy-src
-function getImgSrc($img) {
-  return $img.attr("data-lazy-src") || $img.attr("src") || "";
-}
-
 export async function scrapeNerfBuff() {
   console.log("[nerfbuff] Iniciando scraping...");
   const patches = [];
@@ -33,26 +28,29 @@ export async function scrapeNerfBuff() {
     const res = await axios.get(URL, { headers: HEADERS, timeout: 15000 });
     const $ = cheerio.load(res.data);
 
-    $(".all-balancing-container_balancing").each((_, container) => {
-      const $c = $(container);
-      const $h3 = $c.find("h3.balancing-date-title_balancing").first();
+    // Estrutura: dentro de .all-balancing-container_balancing há N grupos.
+    // Cada grupo = h3.balancing-date-title_balancing + div.flex-container_balancing
+    // Iteramos por cada .flex-container_balancing e lemos o h3 anterior para a data.
+    $(".all-balancing-container_balancing .flex-container_balancing").each((_, flex) => {
+      const $flex = $(flex);
+      // h3 imediatamente anterior ao flex-container
+      const $h3 = $flex.prevAll("h3.balancing-date-title_balancing").first();
       const aria = $h3.attr("aria-label") || "";
       const data = parseAriaDate(aria);
       const temporada = parseSeasonFromAria(aria);
 
       if (!data) return;
 
-      $c.find(".balancing_entry").each((_, entry) => {
-        const $e = $(entry);
-        const tipo = $e.hasClass("buff_entry") ? "buff" : "nerf";
-        const arma = $e.find(".balancingweapon_name").text().trim();
-        const imagem = getImgSrc($e.find(".balancing_icon").first());
-        const link = $e.closest("a.balancing_entry_link").attr("href") || "";
-
+      $flex.find(".detail-card_balancing").each((_, card) => {
+        const $card = $(card);
+        const arma = $card.find(".weapon-name-label_balancing").text().trim();
         if (!arma) return;
+        const tipo = $card.find(".nerf-label_balancing").length ? "nerf" : "buff";
 
         patches.push({
-          arma, tipo, data, temporada, imagem, link,
+          arma, tipo, data, temporada,
+          imagem: "",
+          link: "",
           fonte: "warzoneloadout.games",
           atualizadoEm: new Date().toISOString()
         });

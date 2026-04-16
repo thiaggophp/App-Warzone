@@ -3,19 +3,17 @@ import BottomNav from"./components/BottomNav";
 import Meta from"./pages/Meta";
 import Loadouts from"./pages/Loadouts";
 import Sugestoes from"./pages/Sugestoes";
-import Eventos from"./pages/Eventos";
 import Temporada from"./pages/Temporada";
 import Noticias from"./pages/Noticias";
 import Patches from"./pages/Patches";
 
-const PAGES={meta:Meta,loadouts:Loadouts,sugestoes:Sugestoes,eventos:Eventos,temporada:Temporada,noticias:Noticias,patches:Patches};
+const PAGES={meta:Meta,loadouts:Loadouts,sugestoes:Sugestoes,temporada:Temporada,noticias:Noticias,patches:Patches};
 
 const HEADER={
   meta:{title:"Meta",sub:"Tier list — Black Ops 7"},
   loadouts:{title:"Loadouts",sub:"Builds completas — BO7"},
   sugestoes:{title:"Sugestões",sub:"Setups por estilo de jogo"},
-  eventos:{title:"Eventos",sub:"Recompensas ativas"},
-  temporada:{title:"Temporada",sub:"Warzone × Black Ops 7"},
+temporada:{title:"Temporada",sub:"Warzone × Black Ops 7"},
   noticias:{title:"Notícias",sub:"Warzone em destaque"},
   patches:{title:"Patches",sub:"Nerfs & Buffs recentes"},
 };
@@ -126,13 +124,13 @@ export default function App(){
   const Page=PAGES[tab];
 
   return(
-    <div style={{minHeight:"100dvh",background:"#0a0a0f",display:"flex",flexDirection:"column"}}>
+    <div style={{minHeight:"100dvh",background:"linear-gradient(160deg,#080c0a 0%,#0b1410 100%)",display:"flex",flexDirection:"column"}}>
       {/* Header */}
       <header style={{
         position:"sticky",top:0,zIndex:50,
-        background:"rgba(10,10,15,0.92)",
-        backdropFilter:"blur(20px)",
-        borderBottom:"1px solid rgba(255,255,255,.05)",
+        background:"rgba(6,10,8,.95)",
+        backdropFilter:"blur(24px)",
+        borderBottom:"1px solid rgba(34,197,94,.1)",
         padding:"14px 20px 12px"
       }}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",maxWidth:600,margin:"0 auto"}}>

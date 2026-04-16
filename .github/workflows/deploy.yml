@@ -1,0 +1,37 @@
+name: Deploy VPS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy no VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+
+            # Frontend
+            cd /var/www/warzone-controle
+            git pull
+            npm install
+            npm run build
+            mkdir -p /var/www/warzone-html/data
+            cp -r dist/* /var/www/warzone-html/
+            # Mantém o diretório data servido diretamente pelo scraper (via nginx alias)
+
+            # Scraper
+            cd /var/www/warzone-controle/scraper
+            npm install
+
+            # Reinicia o serviço do scraper se existir
+            systemctl is-active --quiet warzone-scraper && systemctl restart warzone-scraper || true
+
+            systemctl reload nginx
+            echo "Deploy Warzone Recon concluído!"

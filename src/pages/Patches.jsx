@@ -26,7 +26,13 @@ export default function Patches(){
   const[loading,setLoading]=useState(true);
   const[filtro,setFiltro]=useState("Todos");
 
-  useEffect(()=>{getPatches().then(d=>{setPatches(d);setLoading(false)});},[]);
+  useEffect(()=>{
+    getPatches().then(d=>{
+      const mesAtual=new Date().toISOString().slice(0,7); // "2026-04"
+      setPatches(d.filter(p=>p.data&&p.data.startsWith(mesAtual)));
+      setLoading(false);
+    });
+  },[]);
 
   const lista=filtro==="Todos"?patches:patches.filter(p=>p.tipo===filtro);
 
@@ -44,20 +50,22 @@ export default function Patches(){
   return(
     <div style={{animation:"fadeIn .3s ease"}}>
       <div style={{marginBottom:16}}>
-        <h1 style={{fontSize:22,fontWeight:800,color:"#f1f5f9",marginBottom:4}}>Patches</h1>
-        <p style={{fontSize:12,color:"#475569"}}>Nerfs e buffs recentes — warzoneloadout.games</p>
+        <div style={{fontSize:10,color:"#4ade80",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>// BALANÇO</div>
+        <h1 style={{fontSize:22,fontWeight:900,color:"#ddeee4",letterSpacing:.5,textTransform:"uppercase"}}>Patches</h1>
+        <p style={{fontSize:11,color:"#3d5a46",fontWeight:600,letterSpacing:.5,marginTop:2}}>NERFS & BUFFS DO MÊS ATUAL</p>
       </div>
 
       {/* Filtro */}
-      <div style={{display:"flex",gap:6,marginBottom:20}}>
+      <div style={{display:"flex",gap:5,marginBottom:20}}>
         {["Todos","nerf","buff"].map(f=>(
           <button key={f} onClick={()=>setFiltro(f)} style={{
-            padding:"6px 16px",borderRadius:20,border:"1px solid",
-            background:filtro===f?(f==="nerf"?"#ef4444":f==="buff"?"#22c55e":"#f97316"):"rgba(255,255,255,.04)",
-            borderColor:filtro===f?(f==="nerf"?"#ef4444":f==="buff"?"#22c55e":"#f97316"):"rgba(255,255,255,.08)",
-            color:filtro===f?"#fff":"#64748b",
-            fontSize:12,fontWeight:700,cursor:"pointer",textTransform:"capitalize"
-          }}>{f==="nerf"?"Nerfs":f==="buff"?"Buffs":"Todos"}</button>
+            padding:"5px 14px",borderRadius:3,border:"1px solid",
+            background:filtro===f?(f==="nerf"?"#ef4444":f==="buff"?"#4ade80":"#f97316"):"rgba(255,255,255,.03)",
+            borderColor:filtro===f?(f==="nerf"?"#ef4444":f==="buff"?"#4ade80":"#f97316"):"rgba(60,90,70,.3)",
+            color:filtro===f?"#fff":"#4a6a55",
+            fontSize:11,fontWeight:700,cursor:"pointer",
+            letterSpacing:.5,textTransform:"uppercase"
+          }}>{f==="nerf"?"NERFS":f==="buff"?"BUFFS":"TODOS"}</button>
         ))}
       </div>
 
