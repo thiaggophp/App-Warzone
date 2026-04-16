@@ -11,7 +11,7 @@ function tempoPassado(d){
   return"Agora";
 }
 
-const FONTE_COLORS={"warzoneloadout.games":"#f97316","charlieintel.com":"#22c55e","dexerto.com":"#3b82f6","default":"#64748b"};
+const FONTE_COLORS={"warzoneloadout.games":"#f97316","charlieintel.com":"#22c55e","dexerto.com":"#3b82f6","callofduty.com":"#f59e0b","default":"#64748b"};
 
 const TWITTER=[
   {handle:"RavenSoftware",desc:"Desenvolvedora do Warzone",url:"https://x.com/RavenSoftware"},
