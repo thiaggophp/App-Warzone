@@ -7,7 +7,6 @@ import { writeFile, readFile, mkdir } from "fs/promises";
 import { scrapeWzhub } from "./scrapers/wzhub.js";
 import { scrapeCodmunity } from "./scrapers/codmunity.js";
 import { scrapeWzstats } from "./scrapers/wzstats.js";
-import { scrapeRSS } from "./scrapers/rss.js";
 import { scrapeNerfBuff } from "./scrapers/nerfbuff.js";
 import { scrapeTemporada } from "./scrapers/temporada.js";
 import { scrapeCodBlog } from "./scrapers/codBlog.js";
@@ -272,19 +271,12 @@ async function runVerificaTemporada(patches) {
 async function runNoticias() {
   console.log("\n[news] Iniciando ciclo NOTICIAS —", new Date().toLocaleString("pt-BR"));
 
-  const [noticiaRSS, codBlog, patches] = await Promise.all([
-    scrapeRSS(),
+  const [noticias, patches] = await Promise.all([
     scrapeCodBlog(),
     scrapeNerfBuff()
   ]);
 
-  // Merge e deduplica por URL, ordena por data
-  const urlsSeen = new Set();
-  const noticias = [...noticiaRSS, ...codBlog]
-    .filter(n => { if (!n.url || urlsSeen.has(n.url)) return false; urlsSeen.add(n.url); return true; })
-    .sort((a, b) => new Date(b.publicadoEm) - new Date(a.publicadoEm));
-
-  console.log(`[news] ${noticias.length} noticias (rss:${noticiaRSS.length} + blog:${codBlog.length}) | ${patches.length} patches`);
+  console.log(`[news] ${noticias.length} noticias | ${patches.length} patches`);
 
   await saveJSON("noticias.json", noticias);
   await saveJSON("patches.json", patches);
