@@ -19,7 +19,8 @@ jobs:
 
             # Frontend
             cd /var/www/warzone-controle
-            git pull
+            git fetch origin
+            git reset --hard origin/main
             npm install
             npm run build
             BUILD_TS=$(date +%s)
