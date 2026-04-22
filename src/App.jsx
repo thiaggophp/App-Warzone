@@ -128,14 +128,14 @@ export default function App(){
 
   return(
     <div style={{minHeight:"100dvh",background:"linear-gradient(160deg,#080c0a 0%,#0b1410 100%)",display:"flex",flexDirection:"column"}}>
-      {novaVersao&&<div onClick={()=>window.location.reload()} style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"#f97316",color:"#fff",textAlign:"center",padding:"12px 16px",fontSize:13,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:10,userSelect:"none",WebkitUserSelect:"none"}}><span>Nova versão disponível</span><span style={{background:"rgba(255,255,255,0.2)",borderRadius:8,padding:"3px 10px",fontSize:12}}>Toque para atualizar</span></div>}
+      {novaVersao&&<div onClick={()=>window.location.reload()} style={{position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"#f97316",color:"#fff",textAlign:"center",paddingTop:"calc(env(safe-area-inset-top) + 12px)",paddingBottom:"12px",paddingLeft:"16px",paddingRight:"16px",fontSize:13,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:10,userSelect:"none",WebkitUserSelect:"none"}}><span>Nova versão disponível</span><span style={{background:"rgba(255,255,255,0.2)",borderRadius:8,padding:"3px 10px",fontSize:12}}>Toque para atualizar</span></div>}
       {/* Header */}
       <header style={{
         position:"sticky",top:0,zIndex:50,
         background:"rgba(6,10,8,.95)",
         backdropFilter:"blur(24px)",
         borderBottom:"1px solid rgba(34,197,94,.1)",
-        padding:"14px 20px 12px"
+        paddingTop:"calc(env(safe-area-inset-top) + 14px)",paddingBottom:"12px",paddingLeft:"20px",paddingRight:"20px"
       }}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",maxWidth:600,margin:"0 auto"}}>
           {/* Logo + nome — clicável para abrir Sobre */}
